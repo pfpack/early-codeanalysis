@@ -1,0 +1,66 @@
+name: .NET
+
+on:
+  push:
+    branches: [ main, dev, feature/*, fix/*, release/* ]
+
+  pull_request:
+    branches: [ main ]
+
+  release:
+    types: [ published ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: |
+            8.0.x
+
+    # Create Local NuGet Source
+
+    - name: Create Local NuGet Directory
+      run: mkdir ~/nuget
+
+    - name: Add Local Nuget Source
+      run: dotnet nuget add source ~/nuget
+
+    # CodeAnalysis.Extensions
+
+    - name: Restore CodeAnalysis.Extensions
+      run: dotnet restore ./src/*/CodeAnalysis.Extensions.csproj
+
+    - name: Build CodeAnalysis.Extensions
+      run: dotnet build ./src/*/CodeAnalysis.Extensions.csproj --no-restore  -c Release
+
+    - name: Pack CodeAnalysis.Extensions
+      run: dotnet pack ./src/*/CodeAnalysis.Extensions.csproj --no-restore -o ~/nuget  -c Release
+
+    # CodeAnalysis.SourceBuilder
+
+    - name: Restore CodeAnalysis.SourceBuilder
+      run: dotnet restore ./src/*/CodeAnalysis.SourceBuilder.csproj
+
+    - name: Build CodeAnalysis.SourceBuilder
+      run: dotnet build ./src/*/CodeAnalysis.SourceBuilder.csproj --no-restore  -c Release
+
+    - name: Pack CodeAnalysis.SourceBuilder
+      run: dotnet pack ./src/*/CodeAnalysis.SourceBuilder.csproj --no-restore -o ~/nuget  -c Release
+
+      # Push
+
+    - name: Push Packages
+      if: ${{ github.event_name == 'release' }}
+      run: >
+        dotnet nuget push "../../../nuget/*.nupkg"
+        -s https://api.nuget.org/v3/index.json
+        -k ${{ secrets.NuGetSourcePassword }}
+        --skip-duplicate

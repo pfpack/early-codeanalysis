@@ -1,2 +1,2 @@
-# early-infra-codeanalysis
-EarlyFuncPack Infra.CodeAnalysis is an infrastructure library for .NET for use in building source generators
+# early-codeanalysis
+EarlyFuncPack CodeAnalysis is a library for .NET for use in building source generators

@@ -16,11 +16,11 @@
     <RepositoryUrl>https://github.com/pfpack/early-codeanalysis</RepositoryUrl>
     <Company>pfpack</Company>
     <Authors>Andrei Sergeev, Pavel Moskovoy</Authors>
-    <Copyright>Copyright © 2024 Andrei Sergeev, Pavel Moskovoy</Copyright>
+    <Copyright>Copyright © 2025 Andrei Sergeev, Pavel Moskovoy</Copyright>
     <Description>EarlyFuncPack CodeAnalysis is a library for .NET for use in building source generators.</Description>
     <RootNamespace>PrimeFuncPack</RootNamespace>
     <AssemblyName>EarlyFuncPack.CodeAnalysis.SourceBuilder</AssemblyName>
-    <Version>0.0.1-build.1</Version>
+    <Version>0.0.1</Version>
   </PropertyGroup>
 
   <ItemGroup>

@@ -8,10 +8,9 @@ partial class SourceBuilder
 {
     public string Build()
     {
-        var builder = new StringBuilder("// Auto-generated code");
-        builder = builder.AppendLine().Append("#nullable enable");
+        var builder = new StringBuilder("// Auto-generated code by PrimeFuncPack").AppendLine().Append("#nullable enable");
 
-        if (usings.Count is not > 0)
+        if (usings.Count > 0)
         {
             builder = builder.AppendLine();
         }
@@ -23,7 +22,7 @@ partial class SourceBuilder
 
         builder = builder.AppendLine().AppendLine().Append("namespace").Append(' ').Append(@namespace).Append(';');
 
-        if (aliases.Count is not > 0)
+        if (aliases.Count > 0)
         {
             builder = builder.AppendLine();
         }

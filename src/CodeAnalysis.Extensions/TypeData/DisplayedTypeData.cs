@@ -2,7 +2,7 @@
 
 namespace PrimeFuncPack;
 
-public sealed record class DisplayedTypeData
+public sealed class DisplayedTypeData
 {
     public DisplayedTypeData(IReadOnlyCollection<string> allNamespaces, string displayedTypeName)
     {

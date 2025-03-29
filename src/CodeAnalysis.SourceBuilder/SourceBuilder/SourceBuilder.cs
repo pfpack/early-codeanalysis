@@ -23,14 +23,18 @@ public sealed partial class SourceBuilder
 
     private SourceBuilder InnerAppendLineWithTabulation(string codeLine)
     {
-        if (tabulationSize is not > 0)
+        if (codeBuilder.Length > 0)
         {
-            return this;
+            _ = codeBuilder.AppendLine();
         }
 
-        var tabulation = new string(' ', TabulationLength * tabulationSize);
-        _ = codeBuilder.AppendLine().Append(tabulation).Append(codeLine);
+        if (tabulationSize > 0)
+        {
+            var tabulation = new string(' ', TabulationLength * tabulationSize);
+            _ = codeBuilder.Append(tabulation);
+        }
 
+        _ = codeBuilder.Append(codeLine);
         return this;
     }
 }

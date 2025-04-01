@@ -24,6 +24,6 @@ partial class CodeAnalysisExtensions
 
         static bool IsJsonPropertyNameAttribute(AttributeData attributeData)
             =>
-            InnerIsType(attributeData.AttributeClass, "System.Text.Json.Serialization", "JsonPropertyNameAttribute") is true;
+            InnerIsType(attributeData.AttributeClass, "System.Text.Json.Serialization", "JsonPropertyNameAttribute");
     }
 }

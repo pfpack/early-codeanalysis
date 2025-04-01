@@ -34,7 +34,7 @@ partial class CodeAnalysisExtensions
             =>
             methodSymbol.IsGenericMethod is false &&
             methodSymbol.Parameters.Length is 0 &&
-            string.Equals(methodSymbol.Name, "GetEnumerator");
+            string.Equals(methodSymbol.Name, "GetEnumerator", StringComparison.InvariantCulture);
 
         static ITypeSymbol? GetEnumeratorType(IMethodSymbol methodSymbol)
             =>
@@ -74,7 +74,7 @@ partial class CodeAnalysisExtensions
             methodSymbol.IsGenericMethod is false &&
             methodSymbol.Parameters.Length is 0 &&
             methodSymbol.ReturnType.InnerIsType(SystemNamespace, "Boolean") &&
-            string.Equals(methodSymbol.Name, "MoveNext");
+            string.Equals(methodSymbol.Name, "MoveNext", StringComparison.InvariantCulture);
 
         static bool IsCurrentProperty(IPropertySymbol propertySymbol)
             =>

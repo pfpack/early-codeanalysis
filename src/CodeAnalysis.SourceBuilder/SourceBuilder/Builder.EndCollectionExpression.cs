@@ -4,8 +4,8 @@ partial class SourceBuilder
 {
     public SourceBuilder EndCollectionExpression(string? finalSymbol = default)
     {
-        tabulationSize--;
-        _ = InnerAppendLineWithTabulation("]");
+        currentIndentDepth--;
+        InnerAppendLineIndented("]");
 
         if (string.IsNullOrWhiteSpace(finalSymbol) is false)
         {

@@ -1,6 +1,6 @@
-﻿using System;
+﻿using Microsoft.CodeAnalysis;
+using System;
 using System.Linq;
-using Microsoft.CodeAnalysis;
 
 namespace PrimeFuncPack;
 
@@ -34,7 +34,7 @@ partial class CodeAnalysisExtensions
             =>
             methodSymbol.IsGenericMethod is false &&
             methodSymbol.Parameters.Length is 0 &&
-            string.Equals(methodSymbol.Name, "GetEnumerator", StringComparison.InvariantCulture);
+            string.Equals(methodSymbol.Name, "GetEnumerator", CodeLineComparison);
 
         static ITypeSymbol? GetEnumeratorType(IMethodSymbol methodSymbol)
             =>
@@ -73,11 +73,11 @@ partial class CodeAnalysisExtensions
             =>
             methodSymbol.IsGenericMethod is false &&
             methodSymbol.Parameters.Length is 0 &&
-            methodSymbol.ReturnType.InnerIsType(SystemNamespace, "Boolean") &&
-            string.Equals(methodSymbol.Name, "MoveNext", StringComparison.InvariantCulture);
+            methodSymbol.ReturnType.InnerIsType(InnerNamespaces.System, "Boolean") &&
+            string.Equals(methodSymbol.Name, "MoveNext", CodeLineComparison);
 
         static bool IsCurrentProperty(IPropertySymbol propertySymbol)
             =>
-            string.Equals(propertySymbol.Name, "Current", StringComparison.InvariantCulture);
+            string.Equals(propertySymbol.Name, "Current", CodeLineComparison);
     }
 }

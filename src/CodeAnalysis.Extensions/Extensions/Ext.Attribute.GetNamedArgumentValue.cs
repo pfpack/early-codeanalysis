@@ -1,7 +1,6 @@
-﻿using System;
+﻿using Microsoft.CodeAnalysis;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.CodeAnalysis;
 
 namespace PrimeFuncPack;
 
@@ -17,6 +16,6 @@ partial class CodeAnalysisExtensions
 
         bool IsNameMatched(KeyValuePair<string, TypedConstant> pair)
             =>
-            string.Equals(pair.Key, propertyName, StringComparison.InvariantCulture);
+            string.Equals(pair.Key, propertyName, CodeLineComparison);
     }
 }

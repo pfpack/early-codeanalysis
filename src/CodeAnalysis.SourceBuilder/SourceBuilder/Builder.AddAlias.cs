@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 
 namespace PrimeFuncPack;
 
@@ -12,7 +11,7 @@ partial class SourceBuilder
             return this;
         }
 
-        if (aliases.Any(AliasEquals))
+        if (aliases.Exists(IsAliasMatch))
         {
             return this;
         }
@@ -20,8 +19,8 @@ partial class SourceBuilder
         aliases.Add(alias);
         return this;
 
-        bool AliasEquals(string aliasValue)
+        bool IsAliasMatch(string match)
             =>
-            string.Equals(aliasValue, alias, StringComparison.InvariantCulture);
+            string.Equals(alias, match, CodeLineComparison);
     }
 }

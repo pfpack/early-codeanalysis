@@ -7,7 +7,7 @@ public sealed class DisplayedTypeData
     public DisplayedTypeData(IReadOnlyCollection<string> allNamespaces, string displayedTypeName)
     {
         AllNamespaces = allNamespaces ?? [];
-        DisplayedTypeName = displayedTypeName ?? string.Empty;
+        DisplayedTypeName = displayedTypeName ?? "";
     }
 
     public IReadOnlyCollection<string> AllNamespaces { get; }

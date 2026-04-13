@@ -1,5 +1,5 @@
-﻿using System;
-using Microsoft.CodeAnalysis;
+﻿using Microsoft.CodeAnalysis;
+using System;
 
 namespace PrimeFuncPack;
 
@@ -12,6 +12,6 @@ partial class CodeAnalysisExtensions
     private static bool InnerIsType(this ITypeSymbol? typeSymbol, string @namespace, string typeName)
         =>
         typeSymbol is not null &&
-        string.Equals(typeSymbol.ContainingNamespace?.ToString(), @namespace, StringComparison.InvariantCulture) &&
-        string.Equals(typeSymbol.Name, typeName, StringComparison.InvariantCulture);
+        string.Equals(typeSymbol.ContainingNamespace?.ToString(), @namespace, CodeLineComparison) &&
+        string.Equals(typeSymbol.Name, typeName, CodeLineComparison);
 }

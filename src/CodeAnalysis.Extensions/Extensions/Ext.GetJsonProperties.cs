@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.CodeAnalysis;
+using System.Collections.Generic;
 using System.Linq;
-using Microsoft.CodeAnalysis;
 
 namespace PrimeFuncPack;
 
@@ -13,7 +13,7 @@ partial class CodeAnalysisExtensions
             return [];
         }
 
-        return typeSymbol.GetMembers().OfType<IPropertySymbol>().Where(IsPublic).Where(IsNotIgnored).ToArray();
+        return [.. typeSymbol.GetMembers().OfType<IPropertySymbol>().Where(IsPublic).Where(IsNotIgnored)];
 
         static bool IsPublic(IPropertySymbol propertySymbol)
             =>
@@ -25,7 +25,7 @@ partial class CodeAnalysisExtensions
 
         static bool IsJsonIgnoreAttribute(AttributeData attributeData)
         {
-            if (InnerIsType(attributeData?.AttributeClass, SystemTextJsonSerializationNamespace, "JsonIgnoreAttribute") is not true)
+            if (InnerIsType(attributeData?.AttributeClass, InnerNamespaces.SystemTextJsonSerialization, "JsonIgnoreAttribute") is false)
             {
                 return false;
             }

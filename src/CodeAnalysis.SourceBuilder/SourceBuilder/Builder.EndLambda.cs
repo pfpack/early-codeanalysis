@@ -4,7 +4,7 @@ partial class SourceBuilder
 {
     public SourceBuilder EndLambda()
     {
-        tabulationSize--;
+        currentIndentDepth--;
         return this;
     }
 }

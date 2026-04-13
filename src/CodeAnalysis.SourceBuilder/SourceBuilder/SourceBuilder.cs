@@ -1,40 +1,54 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Text;
 
 namespace PrimeFuncPack;
 
 public sealed partial class SourceBuilder
 {
-    private const int TabulationLength = 4;
+    private const StringComparison CodeLineComparison = StringComparison.InvariantCulture;
 
-    private readonly List<string> usings = [];
+    private const int SingleIndentSize = 4;
 
     private readonly string @namespace;
+
+    private readonly List<string> usings = [];
 
     private readonly List<string> aliases = [];
 
     private readonly StringBuilder codeBuilder = new();
 
-    private int tabulationSize = 0;
+    private int currentIndentDepth;
 
-    public SourceBuilder(string? @namespace)
+    private int CurrentIndentSize => currentIndentDepth * SingleIndentSize;
+
+    // TODO: Consider using global namespace instead of defaulting to the library namespace.
+    public SourceBuilder(string? @namespace = default)
         =>
-        this.@namespace = string.IsNullOrWhiteSpace(@namespace) ? "PrimeFuncPack" : @namespace!;
+        this.@namespace = string.IsNullOrWhiteSpace(@namespace) ? $"{nameof(PrimeFuncPack)}" : @namespace!;
 
-    private SourceBuilder InnerAppendLineWithTabulation(string codeLine)
+    private void InnerAppendLineIndented(string codeLine)
     {
         if (codeBuilder.Length > 0)
         {
             _ = codeBuilder.AppendLine();
         }
 
-        if (tabulationSize > 0)
+        if (currentIndentDepth > 0)
         {
-            var tabulation = new string(' ', TabulationLength * tabulationSize);
-            _ = codeBuilder.Append(tabulation);
+            _ = codeBuilder.Append(InnerCurrentIndent());
         }
 
         _ = codeBuilder.Append(codeLine);
-        return this;
+    }
+
+    private string InnerCurrentIndent() => new(InnerChars.Space, CurrentIndentSize);
+
+    private static class InnerChars
+    {
+        // Use the escape sequence to avoid confusion with other whitespace characters.
+        internal const char Space = '\u0020';
+
+        internal const char Semicolon = ';';
     }
 }

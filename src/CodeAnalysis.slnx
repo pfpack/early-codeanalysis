@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="CodeAnalysis.Extensions/CodeAnalysis.Extensions.csproj" />
+  <Project Path="CodeAnalysis.SourceBuilder/CodeAnalysis.SourceBuilder.csproj" />
+  <Project Path="CodeAnalysis/CodeAnalysis.csproj" />
+</Solution>

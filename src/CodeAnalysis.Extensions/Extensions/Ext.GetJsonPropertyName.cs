@@ -1,6 +1,6 @@
-﻿using System;
+﻿using Microsoft.CodeAnalysis;
+using System;
 using System.Linq;
-using Microsoft.CodeAnalysis;
 
 namespace PrimeFuncPack;
 
@@ -20,7 +20,7 @@ partial class CodeAnalysisExtensions
             }
         }
 
-        return propertySymbol.Name.InnerWithCamelCase();
+        return propertySymbol.Name.InnerToCamelCase();
 
         static bool IsJsonPropertyNameAttribute(AttributeData attributeData)
             =>

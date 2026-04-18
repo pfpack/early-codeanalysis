@@ -1,23 +1,29 @@
-﻿namespace PrimeFuncPack;
+﻿using System;
+
+namespace PrimeFuncPack;
 
 public static partial class CodeAnalysisExtensions
 {
-    private const string SystemNamespace = "System";
+    private const StringComparison CodeLineComparison = StringComparison.InvariantCulture;
 
-    private const string SystemTextJsonSerializationNamespace = "System.Text.Json.Serialization";
-
-    private static string InnerWithCamelCase(this string source)
+    private static string InnerToCamelCase(this string source)
     {
         if (string.IsNullOrEmpty(source))
         {
-            return string.Empty;
+            return "";
         }
 
-        if (source.Length is 1)
-        {
-            return source.ToLowerInvariant();
-        }
+#if NET
+        return string.Concat([Char.ToLowerInvariant(source[0])], source.AsSpan(1));
+#else
+        return string.Concat(Char.ToLowerInvariant(source[0]).ToString(), source.Substring(1));
+#endif
+    }
 
-        return source[0].ToString().ToLowerInvariant() + source.Substring(1);
+    private static class InnerNamespaces
+    {
+        internal const string System = "System";
+
+        internal const string SystemTextJsonSerialization = "System.Text.Json.Serialization";
     }
 }

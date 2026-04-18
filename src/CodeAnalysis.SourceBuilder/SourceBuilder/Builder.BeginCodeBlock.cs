@@ -4,8 +4,8 @@ partial class SourceBuilder
 {
     public SourceBuilder BeginCodeBlock()
     {
-        _ = InnerAppendLineWithTabulation("{");
-        tabulationSize++;
+        InnerAppendLineIndented("{");
+        currentIndentDepth++;
 
         return this;
     }

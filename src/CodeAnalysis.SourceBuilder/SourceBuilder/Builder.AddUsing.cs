@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 
 namespace PrimeFuncPack;
 
@@ -7,46 +6,40 @@ partial class SourceBuilder
 {
     public SourceBuilder AddUsing(params string[] usings)
     {
-        if (usings?.Length is not > 0)
+        foreach (var @using in usings ?? [])
         {
-            return this;
-        }
-
-        foreach (var @using in usings)
-        {
-            _ = InnerAddUsing(@using);
+            InnerAddUsing(@using);
         }
 
         return this;
     }
 
-    private SourceBuilder InnerAddUsing(string @using)
+    private void InnerAddUsing(string @using)
     {
         if (string.IsNullOrWhiteSpace(@using))
         {
-            return this;
+            return;
         }
 
-        if (string.Equals(@using, @namespace, StringComparison.InvariantCulture))
+        if (string.Equals(@using, @namespace, CodeLineComparison))
         {
-            return this;
+            return;
         }
 
-        if (@namespace.StartsWith(@using + ".", StringComparison.InvariantCulture))
+        if (@namespace.StartsWith($"{@using}.", CodeLineComparison))
         {
-            return this;
+            return;
         }
 
-        if (usings.Any(UsingEquals))
+        if (usings.Exists(IsUsingMatch))
         {
-            return this;
+            return;
         }
 
         usings.Add(@using);
-        return this;
 
-        bool UsingEquals(string usingValue)
+        bool IsUsingMatch(string match)
             =>
-            string.Equals(usingValue, @using, StringComparison.InvariantCulture);
+            string.Equals(@using, match, CodeLineComparison);
     }
 }

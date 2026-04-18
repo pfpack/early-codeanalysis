@@ -1,29 +1,29 @@
-﻿using System;
+﻿using Microsoft.CodeAnalysis;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.CodeAnalysis;
 
 namespace PrimeFuncPack;
 
 partial class CodeAnalysisExtensions
 {
-    public static DisplayedTypeData GetDisplayedData(this ITypeSymbol typeSymbol, bool withNullableSymbol = false)
+    public static DisplayedTypeData GetDisplayedData(this ITypeSymbol typeSymbol, bool withNullableSuffix = false)
         =>
         InnerGetDisplayedData(
             typeSymbol: typeSymbol ?? throw new ArgumentNullException(nameof(typeSymbol)),
-            withNullableSymbol: withNullableSymbol);
+            withNullableSuffix: withNullableSuffix);
 
-    private static DisplayedTypeData InnerGetDisplayedData(ITypeSymbol typeSymbol, bool withNullableSymbol)
+    private static DisplayedTypeData InnerGetDisplayedData(ITypeSymbol typeSymbol, bool withNullableSuffix)
     {
         var symbol = typeSymbol;
-        var nullableSymbol = string.Empty;
+        var nullableSuffix = "";
 
         if (typeSymbol.InnerGetNullableBaseType() is ITypeSymbol baseTypeSymbol)
         {
             symbol = baseTypeSymbol;
-            if (withNullableSymbol)
+            if (withNullableSuffix)
             {
-                nullableSymbol = "?";
+                nullableSuffix = "?";
             }
         }
 
@@ -31,37 +31,37 @@ partial class CodeAnalysisExtensions
         {
             var elementTypeData = InnerGetChildrenDisplayedData(arrayTypeSymbol.ElementType);
 
-            List<string> elementTypeNameParts = [elementTypeData.DisplayedTypeName];
-            elementTypeNameParts.AddRange(Enumerable.Repeat("[]", arrayTypeSymbol.Rank));
+            // TODO: Replace declaration of arrays of arrays to multidimensional arrays,
+            // like `[size1]`, `[size1, size2]` and so on, instead of `[][]` and so on.
+            IEnumerable<string> elementTypeNameParts =
+                [elementTypeData.DisplayedTypeName, .. Enumerable.Repeat("[]", arrayTypeSymbol.Rank), nullableSuffix];
 
-            return new DisplayedTypeData(
+            return new(
                 allNamespaces: elementTypeData.AllNamespaces,
-                displayedTypeName: string.Concat(elementTypeNameParts) + nullableSymbol);
+                displayedTypeName: string.Concat(elementTypeNameParts));
         }
 
         if (symbol is not INamedTypeSymbol namedTypeSymbol || namedTypeSymbol.TypeArguments.Length is not > 0)
         {
             var typeNamespace = symbol.ContainingNamespace?.ToString();
-            var typeNamespaces = new List<string>(1);
-
-            if (string.IsNullOrEmpty(typeNamespace) is false)
-            {
-                typeNamespaces.Add(typeNamespace ?? string.Empty);
-            }
+            IReadOnlyCollection<string> typeNamespaces = string.IsNullOrEmpty(typeNamespace) ? [] : [typeNamespace!];
 
             return new(
                 allNamespaces: typeNamespaces,
-                displayedTypeName: symbol.Name + nullableSymbol);
+                displayedTypeName: symbol.Name + nullableSuffix);
         }
 
         var argumentTypes = namedTypeSymbol.TypeArguments.Select(InnerGetChildrenDisplayedData);
 
+        var namespaces = argumentTypes.SelectMany(GetNamespaces);
+        if (symbol.ContainingNamespace?.ToString() is { } containingNamespace)
+        {
+            namespaces = namespaces.Append(containingNamespace);
+        }
+
         return new(
-            allNamespaces: new List<string>(argumentTypes.SelectMany(GetNamespaces))
-            {
-                symbol.ContainingNamespace.ToString()
-            },
-            displayedTypeName: $"{symbol.Name}<{string.Join(", ", argumentTypes.Select(GetName))}>{nullableSymbol}");
+            allNamespaces: [.. namespaces],
+            displayedTypeName: $"{symbol.Name}<{string.Join(", ", argumentTypes.Select(GetName))}>{nullableSuffix}");
 
         static DisplayedTypeData InnerGetChildrenDisplayedData(ITypeSymbol typeSymbol)
             =>
@@ -88,7 +88,7 @@ partial class CodeAnalysisExtensions
             return namedTypeSymbol.NullableAnnotation is NullableAnnotation.Annotated ? typeSymbol : null;
         }
 
-        if (namedTypeSymbol.TypeArguments.Length is 1 && namedTypeSymbol.InnerIsType(SystemNamespace, "Nullable"))
+        if (namedTypeSymbol.TypeArguments.Length is 1 && namedTypeSymbol.InnerIsType(InnerNamespaces.System, "Nullable"))
         {
             return namedTypeSymbol.TypeArguments[0];
         }

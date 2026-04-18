@@ -1,6 +1,6 @@
-﻿using System;
+﻿using Microsoft.CodeAnalysis;
+using System;
 using System.Linq;
-using Microsoft.CodeAnalysis;
 
 namespace PrimeFuncPack;
 
@@ -13,7 +13,7 @@ partial class CodeAnalysisExtensions
             return false;
         }
 
-        if (string.Equals(typeSymbol.ContainingNamespace?.ToString(), @namespace, StringComparison.InvariantCulture) is false)
+        if (string.Equals(typeSymbol.ContainingNamespace?.ToString(), @namespace, CodeLineComparison) is false)
         {
             return false;
         }
@@ -22,6 +22,6 @@ partial class CodeAnalysisExtensions
 
         bool IsEqualToType(string type)
             =>
-            string.Equals(typeSymbol.Name, type, StringComparison.InvariantCulture);
+            string.Equals(typeSymbol.Name, type, CodeLineComparison);
     }
 }

@@ -2,20 +2,13 @@
 
 partial class SourceBuilder
 {
-    public SourceBuilder AppendCodeLine(params string[] codeLines)
+    public SourceBuilder AppendCodeLines(params string[] codeLines)
     {
-        if (codeLines?.Length is not > 0)
+        foreach (var line in codeLines ?? [])
         {
-            return this;
+            InnerAppendLineIndented(line);
         }
 
-        var builder = this;
-
-        foreach (var line in codeLines)
-        {
-            builder = InnerAppendLineWithTabulation(line);
-        }
-
-        return builder;
+        return this;
     }
 }
